@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZIHAD VIP TRADER</title>
+<style>
+/* ===================== GENERAL ===================== */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--vh:100vh;}
+html,body{width:100%;height:calc(var(--vh)*1);background:#000;overflow:hidden;font-family:Arial,sans-serif;}
+
+/* ===================== IFRAME ===================== */
+iframe{width:100%;height:calc(var(--vh)*1);border:none;}
+
+/* ===================== LOGIN ===================== */
+.login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#0b0b0b,#000);border:1.6px solid rgba(255,255,255,.12);z-index:999999;transition:padding-top .25s ease;}
+.login-box{width:270px;padding:28px 22px;border-radius:20px;text-align:center;background:linear-gradient(180deg,#1a1a1a,#0a0a0a);border:4.4px solid rgba(255,255,255,.12);animation:loginGlow 3s infinite;position:relative;}
+@keyframes loginGlow{0%,100%{box-shadow:0 0 25px #ff3b3b;}50%{box-shadow:0 0 45px #fb7185;}}
+.login-box h3{color:#fff;font-size:15px;margin-bottom:14px;}
+.login-box input{width:100%;padding:12px 40px 12px 12px;border-radius:12px;background:#111;color:#fff;border:2.4px solid rgba(255,255,255,.12);text-align:center;font-size:14px;}
+.login-btn{margin-top:16px;padding:12px;border-radius:14px;font-weight:900;background:linear-gradient(135deg,#ff4040,#ff1515);color:#fff;cursor:pointer;}
+.countdown{font-size:11px;color:#f6c96b;margin-top:6px;}
+
+/* ===================== EYE ICON ===================== */
+.eye{
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:18px;
+  color:#f6c96b;
+  user-select:none;
+  transition:transform .2s;
+}
+.eye:hover{
+  transform:translateY(-50%) scale(1.2);
+}
+
+/* ===================== LIVE BAR ===================== */
+.live-bar{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#111;padding:7px 18px;border-radius:22px;font-size:11px;font-weight:900;color:#fff;opacity:0;display:flex;align-items:center;gap:8px;z-index:99999;animation:liveGlow 3s infinite;border:2.5px solid rgba(255,255,255,.12);}
+.live-bar.show{opacity:1;}
+@keyframes liveGlow{0%,100%{box-shadow:0 0 18px #ff3b3b;}50%{box-shadow:0 0 30px #ff8585;}}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#ff2d2d;animation:blink 1.2s infinite;}
+@keyframes blink{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+/* ===================== FX BOX ===================== */
+.fx-box{position:fixed;top:120px;left:40px;width:220px;padding:12px;border-radius:14px;text-align:center;background:#050505;border:4.9px solid rgba(255,255,255,.12);animation:fxGlow 5s infinite;touch-action:none;z-index:9999;}
+@keyframes fxGlow{0%{box-shadow:0 0 20px #ff3b3b}25%{box-shadow:0 0 22px #38ff9c}50%{box-shadow:0 0 22px #3b82ff}75%{box-shadow:0 0 22px #facc15}100%{box-shadow:0 0 20px #ff3b3b}}
+.fx-title{font-size:15px;font-weight:900;color:#fff;cursor:pointer;}
+.fx-sub{font-size:11px;color:#f6c96b;}
+#rt{font-size:18px;font-weight:900;color:#fff;}
+.clock-row{display:flex;justify-content:center;gap:6px;}
+#clock{font-size:12px;color:#bbb;}
+.result{font-size:24px;font-weight:900;}
+.big{color:#ff4d4d;}
+.small{color:#38ff9c;}
+
+/* ===================== TELEGRAM ===================== */
+.telegram{position:fixed;bottom:16px;right:16px;width:52px;height:52px;border-radius:50%;background:#0088cc;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 0 22px rgba(0,136,204,.9);z-index:99999;}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div class="login" id="loginBox">
+  <div class="login-box">
+    <h3>📡 ZIHAD VIP PREDICTOR 📡</h3>
+    <!-- PASSWORD INPUT WITH EYE -->
+    <div style="position:relative;">
+      <input id="pass" type="password" placeholder="VIP Password">
+      <span class="eye" onclick="togglePass()">🔐</span>
+    </div>
+    <div class="countdown" id="vipCountdown">VIP expires in: calculating...</div>
+    <div class="login-btn" id="unlockBtn">TAP TO UNLOCK</div>
+  </div>
+</div>
+
+<!-- ===================== LIVE BAR ===================== -->
+<div class="live-bar" id="liveBar">
+  <span class="live-dot"></span> LIVE SERVER ACTIVE <span class="live-dot"></span>
+</div>
+
+<!-- ===================== IFRAME ===================== -->
+<iframe id="vipFrame"></iframe>
+
+<!-- ===================== FX BOX ===================== -->
+<div class="fx-box" id="box">
+  <div class="fx-title" id="fxToggle">🎡 ZIHAD VIP TRADER 🎡</div>
+  <div id="fxBody">
+    <div class="fx-sub">⏳ WIN GO 30 SEC ⏳</div>
+    <div id="rt">30</div>
+    <div class="clock-row">
+      <span class="live-dot"></span>
+      <div id="clock">00:00:00</div>
+    </div>
+    <div class="result big" id="result"></div>
+  </div>
+</div>
+
+<script>
+/* ===================== VIP PASSWORD SYSTEM + ADMIN ===================== */
+const ADMIN_PASSWORD = "ZIHAD20";
+
+const PASSWORDS = [
+  "ZXVI-29Jan20260000","ZXIP-01Feb20260000","ZX11-04Feb20260000","ZXYT-07Feb20260000","ZXV9-10Feb20260000",
+  "ZXQ2-13Feb20260000","ZXP7-16Feb20260000","ZXAB-19Feb20260000","ZXCD-22Feb20260000","ZXEF-25Feb20260000",
+  "ZXGH-28Feb20260000","ZXJK-02Mar20260000","ZXLM-05Mar20260000","ZXNO-08Mar20260000","ZXPR-11Mar20260000",
+  "ZXST-14Mar20260000","ZXUV-17Mar20260000","ZXWX-20Mar20260000","ZXYZ-23Mar20260000","ZX12-26Mar20260000",
+  "ZX34-29Mar20260000","ZX56-01Apr20260000","ZX78-04Apr20260000","ZX90-07Apr20260000","ZXAB-10Apr20260000",
+  "ZXCD-13Apr20260000","ZXEF-16Apr20260000","ZXGH-19Apr20260000","ZXJK-22Apr20260000","ZXLM-25Apr20260000",
+  "ZXNO-28Apr20260000","ZXPR-01May20260000","ZXST-04May20260000","ZXUV-07May20260000","ZXWX-10May20260000",
+  "ZXYZ-13May20260000","ZX12-16May20260000","ZX34-19May20260000","ZX56-22May20260000","ZX78-25May20260000",
+  "ZX90-28May20260000","ZXAB-31May20260000","ZXCD-03Jun20260000","ZXEF-06Jun20260000","ZXGH-09Jun20260000",
+  "ZXJK-12Jun20260000","ZXLM-15Jun20260000","ZXNO-18Jun20260000","ZXPR-21Jun20260000","ZXST-24Jun20260000"
+];
+const START_DATE = new Date("2026-01-29T00:00:00").getTime();
+const EXPIRY_TIME = 3 * 24 * 60 * 60 * 1000;
+
+function getCurrentPassword(){
+  const now = Date.now();
+  const passed = now - START_DATE;
+  if(passed < 0) return null;
+  const index = Math.floor(passed / EXPIRY_TIME);
+  if(index >= PASSWORDS.length) return null;
+  return PASSWORDS[index];
+}
+
+function getRemainingTime(){
+  const now = Date.now();
+  const passed = now - START_DATE;
+  const index = Math.floor(passed / EXPIRY_TIME);
+  if(index >= PASSWORDS.length) return null;
+  const elapsed = passed % EXPIRY_TIME;
+  const remaining = EXPIRY_TIME - elapsed;
+  const d = Math.floor(remaining / (1000*60*60*24));
+  const h = Math.floor((remaining % (1000*60*60*24)) / (1000*60*60));
+  const m = Math.floor((remaining % (1000*60*60)) / (1000*60));
+  const s = Math.floor((remaining % (1000*60)) / 1000);
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
+
+/* ===================== ELEMENTS ===================== */
+const loginBox=document.getElementById("loginBox");
+const unlockBtn=document.getElementById("unlockBtn");
+const pass=document.getElementById("pass");
+const liveBar=document.getElementById("liveBar");
+const vipFrame=document.getElementById("vipFrame");
+const result=document.getElementById("result");
+const rt=document.getElementById("rt");
+const clock=document.getElementById("clock");
+const box=document.getElementById("box");
+const fxBody=document.getElementById("fxBody");
+const fxToggle=document.getElementById("fxToggle");
+const vipCountdown=document.getElementById("vipCountdown");
+
+/* ===================== DOMAIN LOADER ===================== */
+const domains=[
+ "https://dkwin1.com","https://dkwin2.com","https://dkwin3.com","https://dkwin4.com",
+ "https://dkwin5.com","https://dkwin6.com","https://dkwin7.com","https://dkwin11.com",
+ "https://dkwin12.com","https://dkwin13.com","https://dkwin14.com","https://dkwin15.com",
+ "https://dkwin16.com","https://dkwin17.com","https://dkwin18.com","https://dkwin19.com",
+ "https://dkwin20.com"
+];
+const path="/#/register?invitationCode=63258962716";
+let domainIndex=Math.floor(Math.random()*domains.length);
+let retryTimer=null;
+
+function loadDomain(){
+  clearTimeout(retryTimer);
+  vipFrame.src=domains[domainIndex]+path;
+  retryTimer=setTimeout(()=>{
+    domainIndex=(domainIndex+1)%domains.length;
+    loadDomain();
+  },6500);
+}
+vipFrame.onload=()=>clearTimeout(retryTimer);
+
+/* ===================== LOGIN FUNCTION ===================== */
+function unlock(){
+  const input = pass.value;
+
+  // ADMIN LOGIN
+  if(input === ADMIN_PASSWORD){
+    loginBox.style.display="none";
+    loadDomain();
+    initPrediction();
+    startTimer();
+    setTimeout(()=>liveBar.classList.add("show"),3000);
+    console.log("ADMIN ACCESS GRANTED");
+    return;
+  }
+
+  // VIP LOGIN
+  const currentPass = getCurrentPassword();
+  if(!currentPass){
+    alert("VIP EXPIRED ❌");
+    location.href="https://t.me/+Kva7rxumlptiODVl";
+    return;
+  }
+
+  if(input === currentPass){
+    loginBox.style.display="none";
+    loadDomain();
+    initPrediction();
+    startTimer();
+    setTimeout(()=>liveBar.classList.add("show"),3000);
+  } else {
+    alert("INVALID PASSWORD ❌");
+    location.href="https://t.me/+Kva7rxumlptiODVl";
+  }
+}
+unlockBtn.onclick=unlock;
+
+/* ===================== VIP COUNTDOWN ===================== */
+setInterval(()=>{
+  const remaining = getRemainingTime();
+  vipCountdown.textContent = remaining ? `VIP expires in: ${remaining}` : "VIP EXPIRED";
+},1000);
+
+/* ===================== LIVE BAR CLICK RELOAD ===================== */
+["click","touchend"].forEach(e=>{
+  liveBar.addEventListener(e,()=>location.reload());
+});
+
+/* ===================== FX TOGGLE ===================== */
+fxToggle.onclick=()=>{fxBody.style.display = fxBody.style.display==="none"?"block":"none";};
+
+/* ===================== PREDICTION ===================== */
+let history = [];
+let last = null;
+const MAX_HISTORY = 30;
+
+function predict(){
+  if(last === null){
+    last = Math.random() > 0.5 ? "BIG" : "SMALL";
+  } else {
+    if(history.length >= 3){
+      let streak = history.slice(-3);
+      if(streak.every(v => v==="BIG")) last="SMALL";
+      else if(streak.every(v => v==="SMALL")) last="BIG";
+      else last=Math.random() > 0.55 ? "BIG":"SMALL";
+    } else {
+      if(Math.floor(Math.random()*9)===0) last = last==="BIG"?"SMALL":"BIG";
+      else last=Math.random() > 0.55 ? "BIG":"SMALL";
+    }
+  }
+  history.push(last);
+  if(history.length>MAX_HISTORY) history.shift();
+  return last;
+}
+
+function initPrediction(){
+  const r=predict();
+  result.textContent=r;
+  result.className="result "+(r==="BIG"?"big":"small");
+  return r;
+}
+setInterval(()=>{initPrediction();},30000);
+
+/* ===================== TIMER ===================== */
+let baseTime=Math.floor(Date.now()/30000)*30000;
+function startTimer(){
+  setInterval(()=>{
+    const diff=Date.now()-baseTime;
+    const sec=30-Math.floor(diff/1000);
+    rt.textContent=Math.max(1,sec);
+    clock.textContent=new Date().toLocaleTimeString();
+    result.style.visibility = (sec===30||sec===29||sec===1||sec===0)?"hidden":"visible";
+    if(diff>=30000){
+      baseTime+=30000;
+      initPrediction();
+    }
+  },200);
+}
+
+/* ===================== DRAG FX BOX ===================== */
+let dragging=false,sx=0,sy=0,bx=0,by=0;
+function startDrag(x,y){dragging=true;sx=x;sy=y;bx=box.offsetLeft;by=box.offsetTop;}
+function moveDrag(x,y){if(!dragging)return;box.style.left=bx+(x-sx)+"px";box.style.top=by+(y-sy)+"px";}
+box.addEventListener("mousedown",e=>startDrag(e.clientX,e.clientY));
+window.addEventListener("mousemove",e=>moveDrag(e.clientX,e.clientY));
+window.addEventListener("mouseup",()=>dragging=false);
+box.addEventListener("touchstart",e=>{const t=e.touches[0];startDrag(t.clientX,t.clientY);});
+window.addEventListener("touchmove",e=>{const t=e.touches[0];moveDrag(t.clientX,t.clientY);});
+window.addEventListener("touchend",()=>dragging=false);
+
+/* ===================== EYE TOGGLE PASSWORD ===================== */
+function togglePass(){
+  if(pass.type==="password"){
+    pass.type="text";
+  } else {
+    pass.type="password";
+  }
+}
+
+/* ===================== MOBILE KEYBOARD FIX ===================== */
+(function(){
+  function fix(){
+    const h=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    if(h<window.innerHeight*0.75){loginBox.style.alignItems="flex-start";loginBox.style.paddingTop="40px";}
+    else{loginBox.style.alignItems="center";loginBox.style.paddingTop="0";}
+  }
+  fix();
+  window.visualViewport?.addEventListener("resize",fix);
+  window.addEventListener("resize",fix);
+})();
+
+/* ===================== iOS SAFARI PERFECT VIEWPORT ===================== */
+(function(){
+  function setVH(){
+    const vh = window.visualViewport?window.visualViewport.height:window.innerHeight;
+    document.documentElement.style.setProperty("--vh",vh+"px");
+  }
+  setVH();
+  if(window.visualViewport) window.visualViewport.addEventListener("resize",setVH);
+  window.addEventListener("resize",setVH);
+})();
+</script>
+</body>
+</html>
