@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ZX VIP TRADER PREMIUM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui}
+body{background:#000;min-height:100vh;overflow:auto;}
+#vipFrame{position:fixed;inset:0;width:100%;height:100%;border:none;z-index:0;}
+#wrap{position:fixed;inset:0;display:flex;justify-content:center;align-items:flex-start;padding-top:160px;z-index:2;pointer-events:none;transition:padding-top .25s ease;}
+.card{pointer-events:auto;}
+#loginBox{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;background:#000;z-index:99;}
+.loginCard{background:#0c0c0c;padding:22px 20px 24px;border-radius:18px;width:240px;text-align:center;box-shadow:0 0 25px rgba(0,255,200,.55);animation:fadeIn .6s ease;}
+.loginBrand{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:14px;letter-spacing:1px;padding:6px 10px;border:1.5px solid rgba(34,224,122,.6);border-radius:10px;box-shadow:0 0 10px rgba(34,224,122,.4);animation:brandGlow 4s ease-in-out infinite;}
+@keyframes brandGlow{0%{text-shadow:0 0 5px #fff}50%{text-shadow:0 0 14px #22e07a}100%{text-shadow:0 0 5px #fff}}
+.passWrap{position:relative;}
+.passWrap input{width:100%;padding:10px 36px 10px 10px;border-radius:10px;border:1.5px solid rgba(255,255,255,.35);outline:none;font-size:14px;text-align:center;background:#fff;}
+.eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:16px;cursor:pointer;}
+.loginBtn{margin-top:14px;width:100%;padding:10px;border:none;border-radius:12px;font-weight:900;font-size:14px;letter-spacing:1px;color:#000;cursor:pointer;background:linear-gradient(135deg,#22e07a,#4cc9f0);box-shadow:0 6px 14px rgba(0,0,0,.6);animation:swing 3s ease-in-out infinite;}
+@keyframes swing{0%,100%{transform:rotate(0deg)}50%{transform:rotate(.6deg)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.card{width:190px;padding:6px 6px 8px;border-radius:16px;background:#0c0c0c;border:2px solid transparent;box-shadow:0 0 14px rgba(0,255,200,.45),0 12px 24px rgba(0,0,0,.7);animation:cardPulse 5s ease-in-out infinite,borderFlow 12s linear infinite;position:absolute;touch-action:none;display:flex;flex-direction:column;z-index:3;pointer-events:auto;}
+#wrap * { pointer-events:auto; } 
+#wrap { pointer-events:none; }
+@keyframes cardPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@keyframes borderFlow{0%{border-color:#22e07a}25%{border-color:#4cc9f0}50%{border-color:#a855f7}75%{border-color:#ffb44a}100%{border-color:#22e07a}}
+.titleTop{text-align:center;font-size:12px;font-weight:900;color:#fff;font-family:'Orbitron',sans-serif;margin-bottom:4px;padding:3px 6px;border:1.5px solid rgba(255,255,255,.4);border-radius:8px;cursor:pointer;}
+.row{display:flex;gap:5px;margin-top:3px} 
+.box,.timeBox{flex:1;background:#000;border-radius:10px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;}
+.colorText{font-weight:900;font-size:18px}
+.green{color:#22e07a}
+.red{color:#ff4b4b}
+.time{font-size:20px;font-weight:900;color:#fff}
+.sc{font-size:12px;color:#fff;margin-top:2px}
+.timeBox .clock{color:#fff;font-size:12px;font-weight:700;margin-top:3px;text-align:center;}
+.winGoTop{margin-top:3px;background:#000;border-radius:8px;padding:2px 0 1px;width:100%;text-align:center;font-size:14px;font-weight:900;color:#ffdf7e;font-family:'Orbitron',sans-serif;}
+.period{margin-top:1px;font-size:11px;font-weight:900;color:#fff}
+.result{margin-top:3px;background:#000;border-radius:10px;padding:6px 0 4px;text-align:center;border:1.5px solid rgba(255,255,255,.4);}
+.resultText{font-size:36px;font-weight:900}
+.big{color:#FFB44A}
+.small{color:#6FA8F6}
+.nums{margin-top:4px;display:flex;justify-content:center;gap:5px}
+.num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;background:#000}
+.redNum{color:#ff4b4b;border:1.5px solid #ff4b4b}
+.greenNum{color:#22e07a;border:1.5px solid #22e07a}
+.violetNum{border:1.5px solid #a855f7;color:#a855f7}
+.tg{margin-top:5px;background:linear-gradient(135deg,#22e07a,#4cc9f0);color:#fff;font-weight:900;font-size:14px;text-align:center;padding:7px 0;border-radius:10px;font-family:'Orbitron',sans-serif;box-shadow:0 3px 8px rgba(0,0,0,.4);cursor:pointer;}
+.tg a{color:#fff;text-decoration:none;display:block}
+.liveWrap{display:flex;align-items:center;gap:2px;font-size:9px;margin-top:3px}
+.liveDot{width:5px;height:5px;border-radius:50%;background:#ff3b3b;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.3}}
+.live{color:#fff;font-weight:700;font-size:9px}
+.server{color:#ff2fb3;font-size:9px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- IFRAME -->
+<iframe id="vipFrame"></iframe>
+
+<!-- LOGIN BOX -->
+<div id="loginBox">
+  <div class="loginCard">
+    <div class="loginBrand">ZX VIP TRADER </div>
+    <div class="passWrap">
+      <input type="password" id="pass" placeholder="VIP Password">
+      <span class="eye" onclick="togglePass()">🔐🔑</span>
+    </div>
+    <div id="vipCountdown" style="margin-top:6px;font-size:12px;color:#ffdf7e;">Calculating VIP...</div>
+    <button class="loginBtn" onclick="unlock()">𝗨𝗡𝗟𝗢𝗖𝗞</button>
+  </div>
+</div>
+
+<!-- ZX CARD -->
+<div id="wrap" style="display:none">
+  <div class="card" id="card">
+    <div class="titleTop" id="zxToggle">ZIHAD SIR ZX TRADER</div>
+    <div id="zxBody">
+      <div class="row">
+        <div id="colorBox" class="box ">
+          <div class="colorText" id="colorText"></div>
+          <div class="liveWrap">
+            <div class="liveDot"></div>
+            <span class="live">𝗟𝗜𝗩𝗘.️</span>
+            <span class="Sarver"> 🌎 </span>
+          </div>
+        </div>
+        <div class="timeBox">
+          <div class="time"><span id="timer">30</span><span class="sc"></span></div>
+          <div class="clock" id="clock">00:00:00</div>
+        </div>
+      </div>
+      <div class="winGoTop">
+         WIN GO 30 SC 
+        <div class="period" id="dPeriod">----</div>
+      </div>
+      <div class="result">
+        <div id="resText" class="resultText"></div>
+        <div class="nums" id="nums"></div>
+      </div>
+      <div class="tg">
+        <a href="https://t.me/+Kva7rxumlptiODVl" target="_blank">Join Telegram</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= VIP PASSWORD SYSTEM =================
+const PASSWORDS=[
+"ZX-3DaY5Q77r9","ZX-3DaYViMP7","ZX-3DaY2K8LQ9","ZX-3DaYF7R4M2",
+"ZX-3DaY8X5P6A","ZX-3DaYR9L2K8","ZX-3DaYQ4F7W1","ZX-3DaY6M8C2R",
+"ZX-3DaYJ5P9T3","ZX-3DaYB7A4X6","ZX-3DaYH2K9L8","ZX-3DaYV8R6F5",
+"ZX-3DaYN4Q7P2","ZX-3DaYC9X6K3","ZX-3DaYD5L8R1","ZX-3DaYE3M7A9",
+"ZX-3DaYP6F2Q8","ZX-3DaYT9R5X4","ZX-3DaYS7A8K2","ZX-3DaYJ6Q9L5",
+"ZX-3DaYK2F7R8","ZX-3DaYL8P5X3","ZX-3DaYM4A9Q6","ZX-3DaYN7K2R5",
+"ZX-3DaYO3F8L9","ZX-3DaYP5X7A2","ZX-3DaYQ6M4R8","ZX-3DaYR9L1K3",
+"ZX-3DaYS2P8F7","ZX-3DaYT4A6Q9","ZX-3DaYU7K5X2","ZX-3DaYV3F9L8",
+"ZX-3DaYW5P2Q6","ZX-3DaYX8A7R4","ZX-3DaYY1K6M9","ZX-3DaYZ4F3X7",
+"ZX-3DaYB6L9Q2","ZX-3DaYC8P5A3","ZX-3DaYD2R7K4","ZX-3DaYE9X6M1",
+"ZX-3DaYF5Q8L2","ZX-3DaYG3A7R9","ZX-3DaYH6K4F8","ZX-3DaYJ2P9X5",
+"ZX-3DaYK7M1Q6","ZX-3DaYL5F8R3","ZX-3DaYM8A2K7","ZX-3DaYN3X9L4",
+"ZX-3DaYO6Q5P8","ZX-3DaYP9R7A1"
+];
+
+const START_DATE = new Date("2026-01-29T00:00:00").getTime();
+const EXPIRY_TIME = 3*24*60*60*1000; // 3 days per VIP password
+
+// ================= ADMIN PASSWORD =================
+const ADMIN_PASSWORD = "ZIHAD20"; // এক্সপায়ারহীন
+
+// ================= VIP / ADMIN FUNCTIONS =================
+function getCurrentPassword(){
+  const now = Date.now();
+  const passed = now - START_DATE;
+  if(passed < 0) return null;
+  const index = Math.floor(passed / EXPIRY_TIME);
+  if(index >= PASSWORDS.length) return null;
+  return PASSWORDS[index];
+}
+
+function getRemainingTime(){
+  const now = Date.now();
+  const passed = now - START_DATE;
+  const index = Math.floor(passed / EXPIRY_TIME);
+  if(index >= PASSWORDS.length) return null;
+  const elapsed = passed % EXPIRY_TIME;
+  const remaining = EXPIRY_TIME - elapsed;
+  const d = Math.floor(remaining / (1000*60*60*24));
+  const h = Math.floor((remaining % (1000*60*60*24)) / (1000*60*60));
+  const m = Math.floor((remaining % (1000*60*60)) / (1000*60));
+  const s = Math.floor((remaining % (1000*60)) / 1000);
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
+
+const vipCountdown = document.getElementById("vipCountdown");
+setInterval(()=>{
+  const remaining = getRemainingTime();
+  vipCountdown.textContent = remaining ? `VIP expires in: ${remaining}` : "VIP EXPIRED ❌";
+},1000);
+
+const pass = document.getElementById("pass");
+const loginBox = document.getElementById("loginBox");
+const wrap = document.getElementById("wrap");
+
+function togglePass(){ pass.type = pass.type==="password"?"text":"password"; }
+
+function unlock(){
+  const enteredPass = pass.value;
+  const currentPass = getCurrentPassword();
+
+  // ===== ADMIN CHECK (NO EXPIRY) =====
+  if(enteredPass === ADMIN_PASSWORD){
+    loginBox.style.display="none";
+    wrap.style.display="flex";
+    loadDomain(); 
+    startTimer();
+    vipCountdown.textContent = "ADMIN ACCESS ✅ (No Expiry)";
+    return;
+  }
+
+  // ===== VIP CHECK =====
+  if(!currentPass){ 
+    vipCountdown.textContent="VIP EXPIRED ❌"; 
+    return; 
+  }
+
+  if(enteredPass === currentPass){
+    loginBox.style.display="none";
+    wrap.style.display="flex";
+    loadDomain(); 
+    startTimer();
+  } 
+  else {
+    // ❌ WRONG PASSWORD → TELEGRAM FEEDBACK
+    vipCountdown.textContent = "WRONG PASSWORD ❌ Contact Admin";
+
+    // Telegram auto open (after 800ms)
+    setTimeout(()=>{
+      window.open(
+        "https://t.me/+Kva7rxumlptiODVl",
+        "_blank"
+      );
+    },200);
+  }
+}
+
+// ================= DOMAIN LOAD =================
+const vipFrame = document.getElementById("vipFrame");
+const domains=["https://dkwin1.com","https://dkwin2.com","https://dkwin3.com","https://dkwin4.com","https://dkwin5.com","https://dkwin6.com","https://dkwin7.com","https://dkwin8.com","https://dkwin9.com","https://dkwin10.com","https://dkwin11.com","https://dkwin12.com","https://dkwin13.com","https://dkwin14.com","https://dkwin15.com","https://dkwin16.com","https://dkwin17.com","https://dkwin18.com","https://dkwin19.com","https://dkwin20.com"];
+const path="/#/register?invitationCode=63258962716";
+let domainIndex=Math.floor(Math.random()*domains.length);
+let retryTimer=null;
+function loadDomain(){
+  clearTimeout(retryTimer);
+  vipFrame.src=domains[domainIndex]+path;
+  retryTimer=setTimeout(()=>{domainIndex=(domainIndex+1)%domains.length; loadDomain();},6500);
+}
+vipFrame.onload=()=>clearTimeout(retryTimer);
+
+// ================= TIMER & AI PREDICTION =================
+const timer = document.getElementById("timer");
+const clock = document.getElementById("clock");
+const resText = document.getElementById("resText");
+const colorBox = document.getElementById("colorBox");
+const colorText = document.getElementById("colorText");
+const nums = document.getElementById("nums");
+
+let bH=[],cH=[],lastB=null,lastC=null,bBias=0.53,cBias=0.50; // lastB=null → first prediction random
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const streak=(a,l)=>a.length>=l && a.slice(-l).every(x=>x===a.at(-1));
+const flipB=_=>lastB==="BIG"?"SMALL":"BIG";
+const flipC=_=>lastC==="GREEN"?"RED":"GREEN";
+
+const pBS=_=>{
+  let r;
+  // প্রথমবার prediction র্যান্ডম
+  if(lastB===null){
+    r = Math.random()<0.5 ? "BIG" : "SMALL";
+  } else {
+    r = streak(bH,4)?flipB():
+        streak(bH,3)?(Math.random()<0.6?lastB:flipB()):
+        Math.random()<bBias?"BIG":"SMALL";
+  }
+  bBias = clamp(bBias+(r==="BIG"?0.01:-0.01),0.42,0.58);
+  bH.push(lastB=r); if(bH.length>10)bH.shift();
+  return r;
+};
+
+const pC=_=>{
+  let r;
+  if(lastC===null){
+    r = Math.random()<0.5 ? "GREEN" : "RED";
+  } else {
+    r = streak(cH,3)?flipC():
+        streak(cH,2)?(Math.random()<0.55?lastC:flipC()):
+        Math.random()<cBias?"GREEN":"RED";
+  }
+  cBias = clamp(cBias+(r==="GREEN"?0.01:-0.01),0.45,0.55);
+  cH.push(lastC=r); if(cH.length>10)cH.shift();
+  return r;
+};
+
+const pN=bs=>(bs==="BIG"?[5,6,7,8,9]:[0,1,2,3,4]).sort(()=>Math.random()-.5).slice(0,2);
+
+function updatePrediction(){
+  const bs=pBS(), color=pC(), numsArr=pN(bs);
+  resText.innerText = bs;
+  resText.className = "resultText "+(bs==="BIG"?"big":"small");
+  colorBox.className = "box "+(color==="GREEN"?"green":"red");
+  colorText.innerText = color;
+  nums.innerHTML = "";
+  numsArr.forEach(n=>{
+    const el=document.createElement("div");
+    el.className="num "+(n==0||n==5?"violetNum":[1,3,7,9].includes(n)?"greenNum":"redNum");
+    el.innerText=n; nums.appendChild(el);
+  });
+}
+// ================= 30s TIMER =================
+let baseTime=Math.floor(Date.now()/30000)*30000;
+function startTimer(){
+  setInterval(()=>{
+    const diff = Date.now()-baseTime;
+    const sec = 30 - Math.floor(diff/1000);
+    timer.innerText = Math.max(1,sec);
+    clock.innerText = new Date().toLocaleTimeString();
+    
+    // UI hide/show
+    if(sec===30||sec===29||sec===1||sec===0){
+      resText.style.visibility="hidden"; 
+      nums.style.visibility="hidden";
+    } else {
+      resText.style.visibility="visible"; 
+      nums.style.visibility="visible";
+    }
+
+    // 30s interval update
+    if(diff>=30000){
+      baseTime += 30000;
+      updatePrediction();
+    }
+  },200);
+}
+
+// ================= LIVE PERIOD =================
+function pad(n){return String(n).padStart(2,'0');}
+(function liveWinGo(){
+  const el=document.getElementById("dPeriod");
+  const now=new Date(); const utc6=new Date(now.getTime()+6*3600*1000);
+  const dayStart=new Date(utc6); dayStart.setUTCHours(6,0,0,0);
+  let diffMs=utc6-dayStart;
+  let periodIndex=diffMs>=0?Math.floor(diffMs/30000)+1:Math.floor((diffMs+86400000)/30000)+1;
+  if(periodIndex<1) periodIndex=1; if(periodIndex>2880) periodIndex=2880;
+  const y=utc6.getUTCFullYear(), m=pad(utc6.getUTCMonth()+1), d=pad(utc6.getUTCDate());
+  if(el) el.innerText=`${y}${m}${d}-${String(periodIndex).padStart(4,'0')}`;
+  const msUntilNext=30000-(utc6.getSeconds()*1000+utc6.getMilliseconds());
+  setTimeout(liveWinGo, msUntilNext+5);
+})();
+
+// ================= ZX BODY TOGGLE =================
+const zxToggle = document.getElementById("zxToggle");
+const zxBody = document.getElementById("zxBody");
+zxToggle.addEventListener("click", () => {
+  zxBody.style.display = zxBody.style.display === "none" ? "block" : "none";
+});
+
+// ================= CARD DRAG =================
+const card = document.getElementById("card");
+let drag = false, ox = 0, oy = 0;
+card.addEventListener('pointerdown', e => {
+  drag = true;
+  ox = e.clientX - card.offsetLeft;
+  oy = e.clientY - card.offsetTop;
+});
+window.addEventListener('pointermove', e => {
+  if(!drag) return;
+  card.style.left = (e.clientX - ox) + 'px';
+  card.style.top = (e.clientY - oy) + 'px';
+});
+window.addEventListener('pointerup', () => drag = false);
+
+// ================= MOBILE KEYBOARD ADJUST =================
+(function(){
+  const basePadding = 160;
+  function adjust(){
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    wrap.style.paddingTop = vh < screen.height * 0.75 ? "40px" : basePadding + "px";
+  }
+  if(window.visualViewport) visualViewport.addEventListener("resize", adjust);
+  window.addEventListener("resize", adjust);
+})();
+</script>
+</body>
+</html>
